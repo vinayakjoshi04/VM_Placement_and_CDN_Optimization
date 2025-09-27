@@ -97,10 +97,10 @@ Experience the full functionality without any installation - the live demo inclu
 **Option A: Using Git (Recommended)**
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/vm-placement-cdn-optimizer.git
+https://github.com/vinayakjoshi04/VM_Placement_and_CDN_Optimization.git
 
 # Navigate to the project directory
-cd vm-placement-cdn-optimizer
+cd VM_Placement_and_CDN_Optimization
 ```
 
 **Option B: Download ZIP**
