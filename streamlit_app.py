@@ -417,34 +417,42 @@ elif menu == "📈 Analytics":
         st.markdown("### Model Performance History")
         results = st.session_state["results"]
         
-        # Create comparison chart
-        all_results = []
-        for target in ["latency", "cost"]:  # Changed egress to cost
-            for model, mae in results[target].items():
-                all_results.append({
-                    "Target": target.title(),
-                    "Model": model,
-                    "MAE": mae
+        # Create comparison charts separately for latency and cost
+        for target in ["latency", "cost"]:  # loop for both metrics
+            target_results = results[target]
+            
+            if target_results:
+                results_df = pd.DataFrame({
+                    "Model": list(target_results.keys()),
+                    "MAE": list(target_results.values())
                 })
-        
-        if all_results:
-            results_df = pd.DataFrame(all_results)
-            fig = go.Figure()
-            
-            for target in results_df["Target"].unique():
-                target_data = results_df[results_df["Target"] == target]
-                fig.add_trace(go.Bar(
-                    name=target,
-                    x=target_data["Model"],
-                    y=target_data["MAE"]
+                
+                fig = go.Figure(go.Bar(
+                    x=results_df["Model"],
+                    y=results_df["MAE"],
+                    text=results_df["MAE"].round(3),
+                    textposition="auto"
                 ))
-            
-            fig.update_layout(
-                title="Model Performance Comparison",
-                barmode='group',
-                yaxis_title="Mean Absolute Error"
-            )
-            st.plotly_chart(fig, use_container_width=True)
+                
+                # Fixed y-axis ranges
+                if target == "latency":
+                    y_range = [0, 50]
+                    y_dtick = 10
+                else:  # cost
+                    y_range = [0.0, 0.1]
+                    y_dtick = 0.02
+                
+                fig.update_layout(
+                    title=f"Model Performance - {target.title()}",
+                    yaxis_title="Mean Absolute Error",
+                    yaxis=dict(
+                        tickformat=".2f" if target == "cost" else ".0f",
+                        dtick=y_dtick,
+                        range=y_range
+                    )
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
 
 # =========================
 # Footer
