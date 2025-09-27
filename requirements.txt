@@ -5,4 +5,5 @@ numpy
 matplotlib
 plotly
 joblib
-pulp
+xgboost
+lightgbm
