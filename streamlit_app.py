@@ -1,4 +1,3 @@
-# streamlit_app.py - Deployment Ready Version
 import os
 import streamlit as st
 import pandas as pd
@@ -29,9 +28,7 @@ except ImportError:
 
 from cdn_optimizer import set_models, vm_placement_with_performance
 
-# =========================
-# Page Configuration
-# =========================
+
 st.set_page_config(
     page_title="VM Placement & CDN Optimizer",
     page_icon="🚀",
@@ -39,9 +36,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# =========================
-# Model Training Functions (Integrated)
-# =========================
+
 def get_available_models():
     """Return available models based on installed packages"""
     models = {
@@ -52,7 +47,7 @@ def get_available_models():
             ("poly", PolynomialFeatures(degree=2, include_bias=False)),
             ("lin", LinearRegression())
         ]),
-        "RandomForest": RandomForestRegressor(n_estimators=100, random_state=42),  # Reduced for speed
+        "RandomForest": RandomForestRegressor(n_estimators=100, random_state=42),
         "SVR": SVR(kernel="rbf"),
     }
     
@@ -66,7 +61,7 @@ def get_available_models():
 
 def train_models_integrated(df):
     """Integrated model training function"""
-    # Prepare data - MODIFY THESE COLUMNS TO MATCH YOUR CSV
+
     required_columns = ["latency_ms", "egress_cost_per_gb"]
     feature_columns = {
         "numerical": [
@@ -76,7 +71,6 @@ def train_models_integrated(df):
         "categorical": ["storage_tier"]
     }
     
-    # Check if required columns exist
     missing_cols = [col for col in required_columns + feature_columns["numerical"] + feature_columns["categorical"] 
                    if col not in df.columns]
     if missing_cols:
@@ -86,33 +80,27 @@ def train_models_integrated(df):
         st.write("**Feature columns:**", feature_columns["numerical"] + feature_columns["categorical"])
         return None, None, None
     
-    # Prepare features and targets
     X = df[feature_columns["numerical"] + feature_columns["categorical"]]
     y_latency = df["latency_ms"]
     y_egress = df["egress_cost_per_gb"]
     
-    # Preprocessor
     preprocessor = ColumnTransformer([
         ("num", StandardScaler(), feature_columns["numerical"]),
         ("cat", OneHotEncoder(handle_unknown="ignore"), feature_columns["categorical"])
     ])
     
-    # Get available models
     models = get_available_models()
     
-    # Results storage
-    results = {"latency": {}, "cost": {}}  # Changed egress to cost
-    best_models = {"latency": None, "cost": None}  # Changed egress to cost
-    best_scores = {"latency": float("inf"), "cost": float("inf")}  # Changed egress to cost
+    results = {"latency": {}, "cost": {}}
+    best_models = {"latency": None, "cost": None}
+    best_scores = {"latency": float("inf"), "cost": float("inf")}
     
-    # Training progress
-    total_models = len(models) * 2  # For both latency and cost
+    total_models = len(models) * 2
     progress_bar = st.progress(0)
     status_text = st.empty()
     current_step = 0
     
-    # Training for both targets
-    for target_name, y in [("latency", y_latency), ("cost", y_egress)]:  # Changed egress to cost
+    for target_name, y in [("latency", y_latency), ("cost", y_egress)]:
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         
         for name, model in models.items():
@@ -143,9 +131,7 @@ def train_models_integrated(df):
     
     return results, best_models, best_scores
 
-# =========================
-# Load Pre-trained Models (if available)
-# =========================
+
 @st.cache_resource
 def load_pretrained_models():
     """Load pre-trained models if they exist"""
@@ -170,7 +156,6 @@ def load_pretrained_models():
     
     return models
 
-# Initialize models
 if "models" not in st.session_state:
     pretrained = load_pretrained_models()
     if pretrained:
@@ -180,9 +165,7 @@ if "models" not in st.session_state:
         st.session_state["models"] = {}
         st.session_state["using_pretrained"] = False
 
-# =========================
-# Sidebar Navigation
-# =========================
+
 st.sidebar.markdown("### 🧭 Navigation")
 menu = st.sidebar.radio(
     "Select Module",
@@ -202,9 +185,7 @@ for model, status in model_status.items():
     st.sidebar.markdown(f"**{model}:** {status}")
 st.sidebar.markdown(f"**Last Update:** {datetime.now().strftime('%H:%M:%S')}")
 
-# =========================
-# 📊 Performance Prediction
-# =========================
+
 if menu == "📊 Performance Prediction":
     st.markdown("## 🔮 ML-Powered Performance Prediction")
     
@@ -220,7 +201,6 @@ if menu == "📊 Performance Prediction":
             st.dataframe(df.head())
             st.info(f"Dataset shape: {df.shape[0]} rows, {df.shape[1]} columns")
             
-            # Show column info
             st.markdown("### 📋 Column Information")
             col_info = pd.DataFrame({
                 "Column": df.columns,
@@ -230,20 +210,18 @@ if menu == "📊 Performance Prediction":
             })
             st.dataframe(col_info)
             
-            # Train models button
             if st.button("🚀 Train Models", type="primary"):
                 with st.container():
                     results, best_models, best_scores = train_models_integrated(df)
                     
                     if results and best_models:
-                        # Store models in session state
+
                         st.session_state["models"] = best_models
                         st.session_state["results"] = results
                         st.session_state["best_scores"] = best_scores
                         
                         st.success("✅ Model training completed!")
                         
-                        # Show results
                         col1, col2 = st.columns(2)
                         
                         with col1:
@@ -258,7 +236,7 @@ if menu == "📊 Performance Prediction":
                         
                         with col2:
                             st.markdown("#### 💰 Cost Models")
-                            cost_df = pd.DataFrame(list(results["cost"].items()),  # Changed egress to cost
+                            cost_df = pd.DataFrame(list(results["cost"].items()),
                                                  columns=["Model", "MAE ($/GB)"])
                             cost_df = cost_df.sort_values("MAE ($/GB)")
                             st.dataframe(cost_df)
@@ -266,7 +244,6 @@ if menu == "📊 Performance Prediction":
                             best_cost_model = cost_df.iloc[0]
                             st.success(f"🏆 Best: {best_cost_model['Model']} (MAE: {best_cost_model['MAE ($/GB)']:.4f})")
                         
-                        # Visualization
                         fig_lat = go.Figure()
                         fig_lat.add_trace(go.Bar(x=latency_df["Model"], y=latency_df["MAE (ms)"]))
                         fig_lat.update_layout(title="Latency Model Performance", yaxis_title="MAE (ms)")
@@ -280,13 +257,9 @@ if menu == "📊 Performance Prediction":
         except Exception as e:
             st.error(f"Error processing dataset: {str(e)}")
 
-# =========================
-# 🖥️ VM Placement Optimizer  
-# =========================
 elif menu == "🖥️ VM Placement Optimizer":
     st.markdown("## ⚡ VM Placement Optimizer")
     
-    # Set models for optimization
     if st.session_state.get("models"):
         set_models(st.session_state["models"])
         if st.session_state.get("using_pretrained"):
@@ -298,7 +271,6 @@ elif menu == "🖥️ VM Placement Optimizer":
     
     st.markdown("## 🎯 Multi-Objective VM Placement with Latency & Cost")
     
-    # Performance Parameters
     st.markdown("### ⚙️ Performance Input Parameters")
     with st.form("perf_form"):
         col1, col2 = st.columns(2)
@@ -325,7 +297,6 @@ elif menu == "🖥️ VM Placement Optimizer":
         "storage_tier": storage_tier
     }
     
-    # VM/Server Configuration
     st.markdown("### 🖥️ VM & Server Configuration")
     col1, col2 = st.columns(2)
     with col1:
@@ -336,7 +307,6 @@ elif menu == "🖥️ VM Placement Optimizer":
     vm_names = [f"VM{i+1}" for i in range(num_vms)]
     server_names = [f"Server{j+1}" for j in range(num_servers)]
     
-    # VM Demands
     st.markdown("#### VM Resource Demands")
     demands = {}
     cols = st.columns(min(3, len(vm_names)))
@@ -344,7 +314,6 @@ elif menu == "🖥️ VM Placement Optimizer":
         with cols[i % len(cols)]:
             demands[vm] = st.slider(f"{vm} Demand (CPU)", 1, 32, 4, step=1)
     
-    # Server Capacities and Costs
     st.markdown("#### Server Capacities & Costs")
     capacities = {}
     server_cost = {}
@@ -354,7 +323,6 @@ elif menu == "🖥️ VM Placement Optimizer":
             capacities[srv] = st.slider(f"{srv} Capacity", 16, 128, 64, step=8)
             server_cost[srv] = st.number_input(f"{srv} Cost ($)", 0.1, 3.0, 1.0, step=0.1)
     
-    # Run Optimization
     if st.button("🚀 Run Optimization", type="primary"):
         if not st.session_state.get("models"):
             st.error("Please train models first in the Performance Prediction module!")
@@ -367,14 +335,12 @@ elif menu == "🖥️ VM Placement Optimizer":
             if result:
                 st.success("✅ Optimization Complete!")
                 
-                # Results
                 col1, col2 = st.columns(2)
                 with col1:
                     st.metric("Predicted Latency", f"{result['latency']:.2f} ms")
                 with col2:
                     st.metric("Predicted Cost", f"${result['cost']:.4f}/GB")
                 
-                # VM Assignments
                 st.markdown("### 📋 VM Assignments")
                 assignment_df = pd.DataFrame([
                     {"VM": vm, "Server": srv, "Demand": demands[vm]}
@@ -382,7 +348,6 @@ elif menu == "🖥️ VM Placement Optimizer":
                 ])
                 st.dataframe(assignment_df, use_container_width=True)
                 
-                # Server Metrics
                 st.markdown("### 📊 Server Performance")
                 server_metrics_df = pd.DataFrame([
                     {"Server": srv, 
@@ -393,7 +358,6 @@ elif menu == "🖥️ VM Placement Optimizer":
                 ])
                 st.dataframe(server_metrics_df, use_container_width=True)
                 
-                # Visualization
                 fig = go.Figure()
                 fig.add_trace(go.Bar(
                     x=server_metrics_df["Server"],
@@ -406,9 +370,6 @@ elif menu == "🖥️ VM Placement Optimizer":
             else:
                 st.error("Optimization failed. Check server capacities and VM demands.")
 
-# =========================
-# 📈 Analytics
-# =========================
 elif menu == "📈 Analytics":
     st.markdown("## 📊 Analytics Dashboard")
     st.info("Advanced analytics features coming soon...")
@@ -417,8 +378,7 @@ elif menu == "📈 Analytics":
         st.markdown("### Model Performance History")
         results = st.session_state["results"]
         
-        # Create comparison charts separately for latency and cost
-        for target in ["latency", "cost"]:  # loop for both metrics
+        for target in ["latency", "cost"]:
             target_results = results[target]
             
             if target_results:
@@ -434,11 +394,10 @@ elif menu == "📈 Analytics":
                     textposition="auto"
                 ))
                 
-                # Fixed y-axis ranges
                 if target == "latency":
                     y_range = [0, 50]
                     y_dtick = 10
-                else:  # cost
+                else:
                     y_range = [0.0, 0.1]
                     y_dtick = 0.02
                 
@@ -454,9 +413,6 @@ elif menu == "📈 Analytics":
                 
                 st.plotly_chart(fig, use_container_width=True)
 
-# =========================
-# Footer
-# =========================
 st.markdown("---")
 st.markdown(
     "<div style='text-align:center; color:#666;'>"

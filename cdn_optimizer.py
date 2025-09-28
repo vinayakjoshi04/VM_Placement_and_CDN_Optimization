@@ -1,21 +1,15 @@
-# cdn_optimizer.py
 import pulp
 import pandas as pd
 import os
 import joblib
 from sklearn.pipeline import Pipeline
 
-# =========================
-# 🔌 Global Model Holders
-# =========================
+
 latency_model = None
 cost_model = None
 MODEL_DIR = "models"
 
 
-# =========================
-# 📥 Model Loading / Setup
-# =========================
 def load_models():
     """Load best latency and cost models from training phase."""
     models = {}
@@ -45,7 +39,7 @@ def set_models(models):
     print(f"Models keys: {list(models.keys()) if models else 'None'}")
     
     latency_model = models.get("latency")
-    # Handle both 'cost' and 'egress' keys for backward compatibility
+
     cost_model = models.get("cost") or models.get("egress")
     
     print(f"Set latency_model: {latency_model}")
@@ -55,7 +49,6 @@ def set_models(models):
 
 
 
-# Auto-load trained models on import (with error handling)
 try:
     _loaded = load_models()
     set_models(_loaded)
@@ -67,7 +60,7 @@ def get_model_name(model):
     """Return the model or pipeline's final estimator name."""
     try:
         if isinstance(model, Pipeline):
-            final_est = model.steps[-1][1]  # last estimator
+            final_est = model.steps[-1][1]
             return f"Pipeline({final_est.__class__.__name__})"
         return model.__class__.__name__
     except Exception:
@@ -84,23 +77,20 @@ def predict_latency_cost(features: dict):
         print("Warning: Models not loaded. Using fallback values.")
         print(f"Latency model: {latency_model}")
         print(f"Cost model: {cost_model}")
-        return 50.0, 0.05, "NoModel", "NoModel"  # Fallback values
+        return 50.0, 0.05, "NoModel", "NoModel"
     
     try:
-        # Don't manually encode storage_tier - let the pipeline handle it
         features_copy = features.copy()
         
-        # Ensure all numerical values are float type to avoid isnan errors
         for key, value in features_copy.items():
-            if key != 'storage_tier':  # Keep categorical as string
+            if key != 'storage_tier':
                 features_copy[key] = float(value)
         
-        print(f"Features for prediction: {features_copy}")  # Debug print
+        print(f"Features for prediction: {features_copy}")
         X = pd.DataFrame([features_copy])
-        print(f"DataFrame shape: {X.shape}")  # Debug print
-        print(f"DataFrame columns: {list(X.columns)}")  # Debug print
+        print(f"DataFrame shape: {X.shape}")
+        print(f"DataFrame columns: {list(X.columns)}")
         
-        # Predict latency
         latency_pred = None
         latency_name = "ErrorModel"
         try:
@@ -108,9 +98,8 @@ def predict_latency_cost(features: dict):
             latency_name = get_model_name(latency_model)
         except Exception as e:
             print(f"Latency prediction error: {e}")
-            latency_pred = 50.0  # fallback
+            latency_pred = 50.0
         
-        # Predict cost
         cost_pred = None
         cost_name = "ErrorModel"
         try:
@@ -118,22 +107,18 @@ def predict_latency_cost(features: dict):
             cost_name = get_model_name(cost_model)
         except Exception as e:
             print(f"Cost prediction error: {e}")
-            cost_pred = 0.05  # fallback
+            cost_pred = 0.05
 
         return float(latency_pred), float(cost_pred), latency_name, cost_name
         
     except Exception as e:
         print(f"[Predict Error] {e}")
-        return 50.0, 0.05, "ErrorModel", "ErrorModel"  # Fallback values
+        return 50.0, 0.05, "ErrorModel", "ErrorModel"
 
 
-# =========================
-# ⚖️ Optimizers
-# =========================
 def ilp_vm_optimizer(vm_names, server_names, demands, capacities, server_cost):
     """Solve VM placement using Integer Linear Programming (ILP)."""
     try:
-        # Validate inputs
         if not vm_names or not server_names:
             return None
         
@@ -148,14 +133,11 @@ def ilp_vm_optimizer(vm_names, server_names, demands, capacities, server_cost):
         prob = pulp.LpProblem("VM_Placement", pulp.LpMinimize)
         x = pulp.LpVariable.dicts("x", (vm_names, server_names), cat="Binary")
 
-        # Objective: minimize total cost
         prob += pulp.lpSum(x[vm][srv] * server_cost[srv] for vm in vm_names for srv in server_names)
 
-        # Each VM must be placed on exactly one server
         for vm in vm_names:
             prob += pulp.lpSum(x[vm][srv] for srv in server_names) == 1
 
-        # Capacity constraints
         for srv in server_names:
             prob += pulp.lpSum(demands[vm] * x[vm][srv] for vm in vm_names) <= capacities[srv]
 
@@ -172,7 +154,6 @@ def ilp_vm_optimizer(vm_names, server_names, demands, capacities, server_cost):
                     placement[vm] = srv
                     break
         
-        # Verify all VMs are placed
         if len(placement) != len(vm_names):
             print("Warning: Not all VMs were placed by ILP solver")
             return None
@@ -187,28 +168,24 @@ def ilp_vm_optimizer(vm_names, server_names, demands, capacities, server_cost):
 def greedy_vm_optimizer(vm_names, server_names, demands, capacities, server_cost):
     """Greedy fallback: sort VMs by demand and place on cheapest feasible server."""
     try:
-        # Validate inputs
         if not vm_names or not server_names:
             return None
             
         placement = {}
         available = capacities.copy()
         
-        # Sort VMs by demand (highest first for better packing)
         sorted_vms = sorted(vm_names, key=lambda v: demands[v], reverse=True)
         
         for vm in sorted_vms:
             if demands[vm] <= 0:
                 continue
                 
-            # Find servers that can accommodate this VM
             feasible = [s for s in server_names if available[s] >= demands[vm]]
             
             if not feasible:
                 print(f"No feasible server found for VM {vm} (demand: {demands[vm]})")
                 return None
             
-            # Choose cheapest server with enough capacity
             best_server = min(feasible, key=lambda s: (server_cost[s], -available[s]))
             placement[vm] = best_server
             available[best_server] -= demands[vm]
@@ -222,7 +199,7 @@ def greedy_vm_optimizer(vm_names, server_names, demands, capacities, server_cost
 
 def hybrid_vm_optimizer(vm_names, server_names, demands, capacities, server_cost):
     """Try ILP first, fallback to Greedy."""
-    # Input validation
+
     if not vm_names or not server_names:
         print("Error: Empty VM or server lists")
         return None
@@ -239,10 +216,8 @@ def hybrid_vm_optimizer(vm_names, server_names, demands, capacities, server_cost
         print("Error: Missing cost values for some servers")
         return None
     
-    # Try ILP first
     placement = ilp_vm_optimizer(vm_names, server_names, demands, capacities, server_cost)
     
-    # Fallback to greedy if ILP fails
     if placement is None:
         print("ILP failed, trying greedy approach...")
         placement = greedy_vm_optimizer(vm_names, server_names, demands, capacities, server_cost)
@@ -250,9 +225,6 @@ def hybrid_vm_optimizer(vm_names, server_names, demands, capacities, server_cost
     return placement
 
 
-# =========================
-# 🎯 Wrapper
-# =========================
 def vm_placement_with_performance(vm_names, server_names, demands, capacities,
                                   server_cost, perf_params):
     """
@@ -260,16 +232,13 @@ def vm_placement_with_performance(vm_names, server_names, demands, capacities,
     Distribute latency/cost across servers by utilization share.
     """
     try:
-        # Run placement optimization
         placement = hybrid_vm_optimizer(vm_names, server_names, demands, capacities, server_cost)
         if placement is None:
             print("Error: VM placement optimization failed")
             return None
 
-        # Get ML predictions
         latency_pred, cost_pred, latency_name, cost_name = predict_latency_cost(perf_params)
 
-        # Compute utilization for each server
         util = {srv: 0 for srv in server_names}
         for vm, srv in placement.items():
             util[srv] += demands[vm]
@@ -277,14 +246,12 @@ def vm_placement_with_performance(vm_names, server_names, demands, capacities,
         total_used = sum(util.values())
         if total_used == 0:
             print("Warning: No resources used")
-            total_used = 1  # Avoid division by zero
+            total_used = 1
 
-        # Create server → VMs mapping
         server_vm_map = {srv: [] for srv in server_names}
         for vm, srv in placement.items():
             server_vm_map[srv].append(vm)
 
-        # Calculate per-server metrics
         server_metrics = {}
         for srv in server_names:
             utilization_share = (util[srv] / total_used) if total_used > 0 else 0

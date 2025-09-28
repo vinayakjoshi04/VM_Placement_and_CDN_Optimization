@@ -1,15 +1,14 @@
-# utils.py
 import joblib
 import os
 import pandas as pd
 
-MODEL_DIR = "models"  # ensure correct path
+MODEL_DIR = "models"
 
 def load_models():
     """
     Load latency and cost surrogate models from disk.
     """
-    # Updated to match the actual model filenames from train_model.py
+
     lat_path = os.path.join(MODEL_DIR, "best_latency.joblib")
     cost_path = os.path.join(MODEL_DIR, "best_cost.joblib")
     

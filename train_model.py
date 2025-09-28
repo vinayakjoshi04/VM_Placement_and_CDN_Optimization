@@ -1,4 +1,3 @@
-# train_model.py
 import pandas as pd
 import os
 import joblib
@@ -29,13 +28,11 @@ def load_and_validate_data():
     print(f"Available columns: {list(df.columns)}")
     print(f"Dataset shape: {df.shape}")
     
-    # Check for essential columns (targets)
     essential_cols = ["latency_ms", "egress_cost_per_gb"]
     missing_essential = [col for col in essential_cols if col not in df.columns]
     if missing_essential:
         raise ValueError(f"Missing essential target columns: {missing_essential}")
     
-    # Check for missing values
     if df.isnull().sum().sum() > 0:
         print("Warning: Dataset contains missing values")
         print(df.isnull().sum())
@@ -44,14 +41,13 @@ def load_and_validate_data():
 
 def create_preprocessor(available_columns):
     """Create preprocessing pipeline based on available columns"""
-    # Define potential numerical and categorical columns based on your dataset
+
     potential_num_cols = [
         "distance_km", "bandwidth_MBps", "server_load", "cache_hit_ratio",
         "cpu_utilization", "ram_utilization", "request_size_MB"
     ]
     potential_cat_cols = ["storage_tier"]
     
-    # Filter to only use columns that exist in the dataset
     num_cols = [col for col in potential_num_cols if col in available_columns]
     cat_cols = [col for col in potential_cat_cols if col in available_columns]
     
@@ -118,9 +114,8 @@ def evaluate_models(X, y, target_name, preprocessor, models):
     for name, model in models.items():
         print(f"Training {name}...")
         
-        # Create pipeline
         if name == "PolynomialRegression":
-            # Polynomial regression needs special handling
+
             pipe = Pipeline([
                 ("pre", preprocessor),
                 ("model", model)
@@ -132,19 +127,15 @@ def evaluate_models(X, y, target_name, preprocessor, models):
             ])
         
         try:
-            # Train model
             pipe.fit(X_train, y_train)
             
-            # Make predictions
             y_pred = pipe.predict(X_test)
             
-            # Calculate MAE
             mae = mean_absolute_error(y_test, y_pred)
             results[name] = mae
             
             print(f"  {name}: MAE = {mae:.4f}")
             
-            # Track best model
             if mae < best_score:
                 best_score = mae
                 best_model = pipe
@@ -160,34 +151,27 @@ def main():
     print("Loading dataset...")
     df = load_and_validate_data()
     
-    # Prepare targets
     y_latency = df["latency_ms"]
     y_egress = df["egress_cost_per_gb"]
     
-    # Get feature columns (exclude targets)
     exclude_cols = ["latency_ms", "egress_cost_per_gb"]
     available_feature_cols = [col for col in df.columns if col not in exclude_cols]
     
     print(f"Available feature columns: {available_feature_cols}")
     
-    # Create preprocessor and get final feature list
     preprocessor, feature_cols = create_preprocessor(available_feature_cols)
     
-    # Prepare features
     X = df[feature_cols]
     
     print(f"Final feature set: {feature_cols}")
     print(f"Using {len(feature_cols)} features")
     
-    # Create models
     models = get_models()
     
-    # Storage for results
     all_results = {"latency": {}, "egress": {}}
     best_models = {"latency": None, "egress": None}
     best_scores = {"latency": float("inf"), "egress": float("inf")}
     
-    # Evaluate models for latency
     latency_results, best_latency_model, best_latency_score = evaluate_models(
         X, y_latency, "latency", preprocessor, models
     )
@@ -195,7 +179,6 @@ def main():
     best_models["latency"] = best_latency_model
     best_scores["latency"] = best_latency_score
     
-    # Evaluate models for egress cost
     egress_results, best_egress_model, best_egress_score = evaluate_models(
         X, y_egress, "egress", preprocessor, models
     )
@@ -203,12 +186,10 @@ def main():
     best_models["egress"] = best_egress_model
     best_scores["egress"] = best_egress_score
     
-    # Save best models
     print(f"\n=== Saving Results ===")
     joblib.dump(best_models["latency"], os.path.join(MODEL_DIR, "best_latency.joblib"))
     joblib.dump(best_models["egress"], os.path.join(MODEL_DIR, "best_cost.joblib"))
     
-    # Save results for analysis
     latency_df = pd.DataFrame([
         {"Model": k, "MAE": v} for k, v in latency_results.items() if v is not None
     ])
@@ -219,7 +200,6 @@ def main():
     latency_df.to_csv(os.path.join(MODEL_DIR, "latency_results.csv"), index=False)
     egress_df.to_csv(os.path.join(MODEL_DIR, "cost_results.csv"), index=False)
     
-    # Print summary
     print("✅ Training complete!")
     print(f"Best latency model: {type(best_models['latency'].named_steps['model']).__name__} (MAE: {best_latency_score:.4f})")
     print(f"Best egress model: {type(best_models['egress'].named_steps['model']).__name__} (MAE: {best_egress_score:.4f})")
