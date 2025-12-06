@@ -1,621 +1,476 @@
-# VM Placement & CDN Optimizer
+# 🚀 VM Placement & CDN Optimizer
 
-A machine learning-powered system for optimizing virtual machine placement and CDN performance prediction. This application combines advanced optimization algorithms with predictive models to minimize latency and costs in distributed computing environments.
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)](https://streamlit.io/)
 
-## Table of Contents
-- [Overview](#overview)
-- [Project Workflow](#project-workflow)
-- [Getting Started](#getting-started)
-- [Complete Setup Instructions](#complete-setup-instructions)
-- [How to Use the Project](#how-to-use-the-project)
-- [Features](#features)
-- [Data Format](#data-format)
-- [Model Performance](#model-performance)
-- [Architecture](#architecture)
-- [Deployment](#deployment)
-- [Troubleshooting](#troubleshooting)
+> An intelligent machine learning-powered system for optimizing virtual machine placement and predicting CDN performance. Combines advanced optimization algorithms with predictive models to minimize latency and costs in distributed computing environments.
 
-## Overview
+**[🌐 Live Demo](https://vmplacementandcdnoptimization-mnzkzoya3ysevnq3h3qsj6.streamlit.app/)** | **[📝 Report Bug](https://github.com/vinayakjoshi04/VM_Placement_and_CDN_Optimization/issues)** | **[✨ Request Feature](https://github.com/vinayakjoshi04/VM_Placement_and_CDN_Optimization/issues)**
 
-The VM Placement & CDN Optimizer provides:
-- **Performance Prediction**: ML models trained on real-world data to predict latency and egress costs
-- **VM Placement Optimization**: Intelligent placement of virtual machines across servers using mixed-integer programming
-- **Real-time Analytics**: Interactive dashboard for monitoring system performance and resource utilization
+---
 
-## Project Workflow
+## 📋 Table of Contents
 
-### 1. Data Flow Architecture
-```
-Raw Dataset (CSV) → Data Preprocessing → Model Training → Model Evaluation → Best Model Selection → Deployment
-                                           ↓
-VM Configuration → Performance Parameters → ML Prediction → Optimization Algorithm → Optimal Placement
-```
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+- [Usage Guide](#-usage-guide)
+- [Model Performance](#-model-performance)
+- [Project Structure](#-project-structure)
+- [Configuration](#-configuration)
+- [Deployment](#-deployment)
+- [Troubleshooting](#-troubleshooting)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-### 2. Complete Workflow Steps
+---
 
-**Phase 1: Model Training & Preparation**
-1. **Dataset Preparation**: Load and validate the `vm_placement_cdn_dataset.csv`
-2. **Feature Engineering**: Process numerical and categorical features
-3. **Model Training**: Train 8 different ML algorithms (Linear Regression, Ridge, Lasso, Polynomial, Random Forest, SVR, XGBoost, LightGBM)
-4. **Model Evaluation**: Compare performance using Mean Absolute Error (MAE)
-5. **Model Selection**: Automatically select best performing models
-6. **Model Persistence**: Save best models as `.joblib` files
+## 🎯 Overview
 
-**Phase 2: Real-time Optimization**
-1. **Input Collection**: Gather VM requirements and server specifications
-2. **Performance Prediction**: Use trained ML models to predict latency and costs
-3. **Constraint Setup**: Define capacity, demand, and cost constraints
-4. **Optimization**: Run hybrid ILP + greedy algorithm
-5. **Result Generation**: Provide optimal VM-to-server assignments
-6. **Visualization**: Display results through interactive dashboard
+The VM Placement & CDN Optimizer addresses the complex challenge of efficiently distributing virtual machines across servers while optimizing Content Delivery Network performance. Using machine learning and mathematical optimization, it helps organizations minimize latency, reduce costs, and maximize resource utilization.
 
-**Phase 3: Analysis & Monitoring**
-1. **Performance Tracking**: Monitor system metrics and resource utilization
-2. **Model Comparison**: Analyze different algorithm performance
-3. **Historical Analysis**: Track optimization results over time
+### Problem Statement
 
-## Features
+Organizations face challenges in:
+- ✅ Efficiently distributing workloads across servers
+- ✅ Minimizing network latency for end users
+- ✅ Reducing operational costs while maintaining performance
+- ✅ Managing capacity constraints and resource allocation
 
-### 🔮 ML-Powered Performance Prediction
-- Train multiple ML models (Linear Regression, Random Forest, XGBoost, LightGBM, SVR) on your dataset
-- Compare model performance with automated evaluation metrics
-- Real-time prediction of latency (ms) and egress costs ($/GB)
+### Solution
 
-### ⚡ VM Placement Optimization
-- **Hybrid Optimization**: Combines Integer Linear Programming (ILP) with greedy fallback algorithms
-- **Multi-objective**: Optimizes for both performance and cost simultaneously
-- **Constraint Handling**: Respects server capacity and VM resource requirements
-- **Real-time Results**: Instant optimization with detailed placement recommendations
+This tool provides:
+- **Predictive Analytics**: ML models forecast latency and costs based on system parameters
+- **Intelligent Optimization**: Hybrid algorithms find optimal VM-to-server assignments
+- **Real-Time Insights**: Interactive dashboard for monitoring and decision-making
 
-### 📊 Interactive Analytics
-- Visual performance comparisons across different ML models
-- Server utilization monitoring and resource allocation insights
-- Historical performance tracking and trend analysis
+---
 
-## 🚀 Live Demo
+## ✨ Key Features
 
-**Try the application now:** [VM Placement & CDN Optimizer](https://vmplacementandcdnoptimization-mnzkzoya3ysevnq3h3qsj6.streamlit.app/)
+### 🔮 Performance Prediction Engine
 
-Experience the full functionality without any installation - the live demo includes pre-trained models and all optimization features.
+Train and compare **8 different ML algorithms**:
+- Linear Regression
+- Ridge Regression
+- Lasso Regression
+- Polynomial Regression (degree 2)
+- Random Forest Regressor
+- Support Vector Regression (SVR)
+- XGBoost
+- LightGBM
 
-## Getting Started
+**Automatic Model Selection**: System automatically selects best-performing models based on Mean Absolute Error (MAE)
+
+### ⚡ VM Placement Optimizer
+
+**Optimization Techniques**:
+- **Integer Linear Programming (ILP)**: Guarantees optimal solutions using PuLP solver
+- **Greedy Fallback Algorithm**: Fast approximate solutions for large-scale problems
+- **Multi-Constraint Handling**: Respects server capacity, VM demands, and cost constraints
+
+**Configurable Parameters**:
+- Distance (km)
+- Bandwidth (MBps)
+- Server Load (%)
+- Cache Hit Ratio (%)
+- CPU/RAM Utilization (%)
+- Request Size (MB)
+- Storage Tier (HDD/SSD/NVMe)
+
+### 📊 Interactive Analytics Dashboard
+
+- Model performance comparison visualizations
+- Server utilization monitoring
+- Historical performance tracking
+- Real-time optimization results
+- Resource allocation insights
+
+---
+
+## 🛠️ Tech Stack
+
+| Component | Technology |
+|-----------|------------|
+| **Frontend** | Streamlit, Plotly |
+| **ML Framework** | scikit-learn, XGBoost, LightGBM |
+| **Optimization** | PuLP (CBC Solver) |
+| **Data Processing** | Pandas, NumPy |
+| **Model Persistence** | Joblib |
+| **Deployment** | Streamlit Cloud, Docker |
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
+
 - Python 3.8 or higher
-- pip (Python package installer)
-- Git
+- pip package manager
+- 4GB RAM minimum (8GB recommended)
+- 1GB free disk space
 
-### System Requirements
-- **RAM**: Minimum 4GB, Recommended 8GB+
-- **Storage**: At least 1GB free space
-- **OS**: Windows 10+, macOS 10.14+, or Linux
+### Quick Installation
 
-## Complete Setup Instructions
-
-### Step 1: Clone the Repository
-
-**Option A: Using Git (Recommended)**
 ```bash
 # Clone the repository
-https://github.com/vinayakjoshi04/VM_Placement_and_CDN_Optimization.git
-
-# Navigate to the project directory
+git clone https://github.com/vinayakjoshi04/VM_Placement_and_CDN_Optimization.git
 cd VM_Placement_and_CDN_Optimization
-```
 
-**Option B: Download ZIP**
-1. Go to the GitHub repository page
-2. Click the green "Code" button
-3. Select "Download ZIP"
-4. Extract the ZIP file to your desired location
-5. Open terminal/command prompt and navigate to the extracted folder
+# Create virtual environment
+python -m venv venv
 
-### Step 2: Set Up Python Environment
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
 
-**Option A: Using Virtual Environment (Recommended)**
-```bash
-# Create a virtual environment
-python -m venv vm_optimizer_env
-
-# Activate the virtual environment
-# On Windows:
-vm_optimizer_env\Scripts\activate
-# On macOS/Linux:
-source vm_optimizer_env/bin/activate
-```
-
-**Option B: Using Conda**
-```bash
-# Create conda environment
-conda create -n vm_optimizer python=3.9
-
-# Activate the environment
-conda activate vm_optimizer
-```
-
-### Step 3: Install Dependencies
-
-```bash
-# Install all required packages
+# Install dependencies
 pip install -r requirements.txt
 
-# Verify installation
-pip list
-```
-
-**If you encounter installation issues, try:**
-```bash
-# Update pip first
-pip install --upgrade pip
-
-# Install with no cache
-pip install -r requirements.txt --no-cache-dir
-
-# For Apple M1/M2 users, if you get errors:
-pip install --no-use-pep517 lightgbm
-```
-
-### Step 4: Verify Setup
-
-```bash
-# Test if all packages are working
-python -c "import streamlit, sklearn, pandas, numpy, plotly; print('All packages installed successfully!')"
-```
-
-### Step 5: Run the Application
-
-```bash
-# Start the Streamlit application
-streamlit run streamlit_app.py
-
-# The app will automatically open in your browser at http://localhost:8501
-```
-
-**Alternative: Specify port manually**
-```bash
-streamlit run streamlit_app.py --server.port 8502
-```
-
-## How to Use the Project
-
-### Method 1: Using Pre-trained Models (Quickest)
-
-**Step 1: Start the Application**
-```bash
+# Run the application
 streamlit run streamlit_app.py
 ```
 
-**Step 2: Navigate to VM Placement Optimizer**
-- Click on "VM Placement Optimizer" in the sidebar
-- The app will automatically load pre-trained models
+The application will automatically open in your browser at `http://localhost:8501`
 
-**Step 3: Configure Your System**
-1. **Set Performance Parameters:**
-   - Distance: 100km (example)
-   - Bandwidth: 100 MBps
-   - Server Load: 50%
-   - Cache Hit Ratio: 70%
-   - CPU Utilization: 50%
-   - RAM Utilization: 60%
-   - Request Size: 500MB
-   - Storage Tier: SSD
+### Alternative Installation Methods
 
-2. **Configure VMs and Servers:**
-   - Number of VMs: 6
-   - Number of Servers: 3
-   - Set VM demands (CPU requirements)
-   - Set server capacities and costs
+<details>
+<summary><b>Using Conda</b></summary>
 
-**Step 4: Run Optimization**
-- Click "Run Optimization"
-- View results: optimal placement, predicted latency/cost, server utilization
-
-### Method 2: Training Your Own Models
-
-**Step 1: Prepare Your Dataset**
-Create a CSV file with the required columns:
-```csv
-bandwidth_MBps,cpu_utilization_%,ram_utilization_%,request_size_MB,distance_km,server_load,cache_hit_ratio,storage_tier,latency_ms,egress_cost_per_gb
-100,45,60,500,150,0.3,0.7,SSD,25.4,0.025
-200,30,40,300,80,0.2,0.8,NVMe,15.2,0.015
-```
-
-**Step 2: Upload and Train**
-1. Go to "Performance Prediction" tab
-2. Upload your CSV dataset
-3. Review the dataset preview
-4. Click "Train Models"
-5. Compare model performance results
-
-**Step 3: Use Trained Models**
-- Navigate to "VM Placement Optimizer"
-- Your newly trained models will be automatically used
-
-### Method 3: Standalone Model Training
-
-**For Advanced Users - Command Line Training:**
 ```bash
-# Ensure your dataset is in the correct location
-# Place your CSV file at: data/vm_placement_cdn_dataset.csv
+conda create -n vm_optimizer python=3.9
+conda activate vm_optimizer
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+</details>
 
-# Run the training script
-python train_model.py
+<details>
+<summary><b>Using Docker</b></summary>
 
-# This will create trained models in the models/ directory
+```bash
+# Build image
+docker build -t vm-optimizer .
+
+# Run container
+docker run -p 8501:8501 vm-optimizer
+```
+</details>
+
+### Verify Installation
+
+```bash
+python -c "import streamlit, sklearn, pandas, numpy, plotly; print('✅ All packages installed successfully!')"
 ```
 
-### Complete Usage Examples
+---
 
-#### Example 1: Small Office Setup
-```
-VMs: 3 (VM1: 4 CPU, VM2: 2 CPU, VM3: 6 CPU)
-Servers: 2 (Server1: 16 CPU, $1.00/hour; Server2: 32 CPU, $1.50/hour)
-Parameters: Distance=50km, Bandwidth=200MBps, SSD storage
-```
+## 📖 Usage Guide
 
-#### Example 2: Data Center Configuration
-```
-VMs: 10 (varying CPU demands: 4-16 CPU each)
-Servers: 5 (varying capacities: 64-128 CPU each)
-Parameters: Distance=10km, Bandwidth=1000MBps, NVMe storage
-```
+### Method 1: Using Pre-Trained Models (Quick Start)
 
-### Step-by-Step Workflow Example
+**Perfect for**: Testing and immediate use without training
 
-1. **Launch Application:**
+1. **Launch Application**
    ```bash
    streamlit run streamlit_app.py
    ```
 
-2. **System Status Check:**
-   - Look at sidebar "System Status"
-   - Verify models are "Online" (green status)
+2. **Navigate to VM Placement Optimizer** (sidebar menu)
 
-3. **Input Configuration:**
-   - Set distance: 100km
+3. **Configure System Parameters**
+   - Set distance: 100 km
    - Set bandwidth: 500 MBps
-   - Configure 4 VMs with demands: [4, 6, 8, 4] CPU
-   - Configure 2 servers with capacities: [16, 20] CPU
-   - Set server costs: [$1.0, $1.2] per hour
+   - Configure server load: 50%
+   - Set cache hit ratio: 70%
+   - Define CPU/RAM utilization
+   - Select storage tier
 
-4. **Run Optimization:**
-   - Click "Run Optimization"
-   - Wait for results (typically 1-5 seconds)
+4. **Define VMs and Servers**
+   - Number of VMs: 4
+   - VM CPU demands: [4, 6, 8, 4]
+   - Number of Servers: 2
+   - Server capacities: [16, 20]
+   - Server costs: [$1.0, $1.2] per hour
 
-5. **Analyze Results:**
-   - Review predicted latency and cost
-   - Check VM-to-server assignments
-   - Monitor server utilization percentages
-   - Examine performance visualizations
+5. **Run Optimization** and view results
 
-6. **Iterate and Optimize:**
-   - Adjust parameters to see impact
-   - Try different VM/server configurations
-   - Compare multiple optimization scenarios
+**Example Configuration**:
+```
+📊 Small Office Setup
+VMs: 3 (demands: 4, 2, 6 CPU)
+Servers: 2 (capacities: 16, 32 CPU)
+Costs: $1.00, $1.50 per hour
+Distance: 50km | Bandwidth: 200MBps | Storage: SSD
+```
 
-### Using Pre-trained Models
+### Method 2: Training Custom Models
 
-The application comes with pre-trained models that were trained on a comprehensive dataset:
-- `models/best_latency.joblib` - Optimized for latency prediction (MAE: 5.37ms)
-- `models/best_cost.joblib` - Optimized for cost prediction (MAE: $0.001/GB)
+**Perfect for**: Custom datasets and specific use cases
 
-These models are automatically loaded when the application starts.
+1. **Prepare Dataset** (CSV format):
+   ```csv
+   bandwidth_MBps,cpu_utilization_%,ram_utilization_%,request_size_MB,distance_km,server_load,cache_hit_ratio,storage_tier,latency_ms,egress_cost_per_gb
+   100,45,60,500,150,0.3,0.7,SSD,25.4,0.025
+   200,30,40,300,80,0.2,0.8,NVMe,15.2,0.015
+   ```
 
-## Project File Structure
+2. **Upload and Train**
+   - Go to "📊 Performance Prediction" tab
+   - Upload your CSV file
+   - Review dataset preview
+   - Click "🚀 Train Models"
+   - Compare model performance
+
+3. **Use Trained Models**
+   - Models are automatically saved
+   - Switch to "VM Placement Optimizer" to use them
+
+### Method 3: Command Line Training
+
+**Perfect for**: Batch processing and automation
+
+```bash
+# Ensure dataset is at: data/vm_placement_cdn_dataset.csv
+python train_model.py
+
+# Models will be saved to: models/
+```
+
+### Dataset Requirements
+
+**Required Columns**:
+- `bandwidth_MBps` - Network bandwidth
+- `cpu_utilization_%` - CPU usage percentage
+- `ram_utilization_%` - Memory usage percentage
+- `request_size_MB` - Request size
+- `distance_km` - Geographic distance
+- `server_load` - Server load ratio (0-1)
+- `cache_hit_ratio` - Cache hit ratio (0-1)
+- `storage_tier` - Storage type (HDD/SSD/NVMe)
+- `latency_ms` - **Target**: Network latency
+- `egress_cost_per_gb` - **Target**: Data egress cost
+
+---
+
+## 📊 Model Performance
+
+### Latency Prediction Models
+
+| Model | MAE (ms) | Status | Use Case |
+|-------|----------|--------|----------|
+| **LightGBM** | **5.37** | ✅ Best | Production - High Accuracy |
+| XGBoost | 5.09 | ⭐ Excellent | Production - Balanced |
+| Random Forest | 6.78 | ✓ Very Good | Training - Robust |
+| Polynomial Regression | 57.47 | - Baseline | Comparison Only |
+
+### Cost Prediction Models
+
+| Model | MAE ($/GB) | Status | Use Case |
+|-------|------------|--------|----------|
+| **Linear Regression** | **0.001012** | ✅ Best | Production - Fast |
+| **Ridge** | **0.001012** | ✅ Best | Production - Regularized |
+| Polynomial Regression | 0.001013 | ⭐ Excellent | Training - Complex |
+| LightGBM | 0.001017 | ⭐ Excellent | Production - Accurate |
+
+**Performance Metrics**:
+- Lower MAE = Better prediction accuracy
+- ✅ Best: Optimal for production deployment
+- ⭐ Excellent: Suitable for production with trade-offs
+- ✓ Very Good: Good for training and development
+
+---
+
+## 📁 Project Structure
 
 ```
 vm-placement-cdn-optimizer/
-├── streamlit_app.py          # Main web application
-├── cdn_optimizer.py          # Optimization algorithms & ML integration
-├── train_model.py           # Model training pipeline
-├── utils.py                 # Utility functions
-├── requirements.txt         # Python dependencies
-├── README.md               # This file
-├── models/                 # Pre-trained ML models
-│   ├── best_latency.joblib    # Best latency prediction model
-│   ├── best_cost.joblib       # Best cost prediction model
-│   ├── latency_results.csv    # Training results for latency models
-│   └── cost_results.csv       # Training results for cost models
-├── data/                   # Dataset directory (optional)
+├── 📄 streamlit_app.py          # Main web application interface
+├── 📄 cdn_optimizer.py          # Core optimization algorithms
+├── 📄 train_model.py            # ML model training pipeline
+├── 📄 utils.py                  # Utility functions
+├── 📄 sample_dataset.py         # Sample data generator
+├── 📄 requirements.txt          # Python dependencies
+├── 📄 README.md                 # This file
+├── 📄 LICENSE                   # MIT License
+│
+├── 📁 models/                   # Pre-trained ML models
+│   ├── best_latency.joblib      # Best latency model (LightGBM)
+│   ├── best_cost.joblib         # Best cost model (Linear)
+│   ├── latency_results.csv      # Training results (latency)
+│   └── cost_results.csv         # Training results (cost)
+│
+├── 📁 data/                     # Dataset directory
 │   └── vm_placement_cdn_dataset.csv
-└── notebooks/              # Jupyter notebooks (optional)
-    └── analysis.ipynb
+│
+└── 📁 __pycache__/              # Python cache (auto-generated)
 ```
 
-## Detailed Feature Walkthrough
+### Key Components
 
-### 1. Performance Prediction Module
+| File | Purpose |
+|------|---------|
+| `streamlit_app.py` | Main UI with 3 tabs: Home, Prediction, Optimizer |
+| `cdn_optimizer.py` | ILP/Greedy optimization + ML integration |
+| `train_model.py` | Model training, evaluation, and selection |
+| `utils.py` | Data preprocessing and feature engineering |
 
-**Upload Your Dataset**
-- Navigate to the "📊 Performance Prediction" tab
-- Upload a CSV file with the required columns (see Data Format section)
-- View dataset preview and column information
-- Click "🚀 Train Models" to create custom models from your data
+---
 
-**Model Training Process**
-1. **Data Validation**: System checks for required columns and data quality
-2. **Feature Engineering**: Automatic preprocessing of numerical and categorical features
-3. **Model Training**: Parallel training of 8 different algorithms
-4. **Performance Evaluation**: Comparison using Mean Absolute Error (MAE)
-5. **Model Selection**: Automatic selection of best performing models
-6. **Results Display**: Interactive charts showing model performance
+## ⚙️ Configuration
 
-**What You'll See**
-- Real-time training progress bar
-- Performance comparison tables for latency and cost models
-- Interactive bar charts showing MAE scores
-- Best model identification with performance metrics
+### System Parameters
 
-### 2. VM Placement Optimizer Module
+Configure these in the Streamlit UI:
 
-**Step-by-Step Configuration**
-
-1. **Performance Parameters Input**
-   - 🌍 **Distance (km)**: Geographic distance between client and server
-   - 📶 **Bandwidth (MBps)**: Available network bandwidth
-   - 🖥️ **Server Load (%)**: Current server utilization
-   - 📂 **Cache Hit Ratio (%)**: Percentage of requests served from cache
-   - ⚡ **CPU Utilization (%)**: Current CPU usage
-   - 💾 **RAM Utilization (%)**: Current memory usage
-   - 📦 **Request Size (MB)**: Average request size
-   - 💽 **Storage Tier**: Storage type (HDD/SSD/NVMe)
-
-2. **VM and Server Configuration**
-   - **Number of VMs**: Specify how many virtual machines need placement (2-20)
-   - **Number of Servers**: Define available servers (2-10)
-   - **VM Demands**: Set CPU requirements for each VM
-   - **Server Capacities**: Define maximum capacity for each server
-   - **Server Costs**: Set hourly costs for each server
-
-3. **Optimization Execution**
-   - Click "🚀 Run Optimization" button
-   - System runs hybrid ILP + greedy optimization algorithm
-   - Results displayed in real-time
-
-**Optimization Results Display**
-- **Overall Metrics**: Total predicted latency and cost
-- **VM Assignments**: Detailed table showing which VM goes to which server
-- **Server Performance**: Utilization percentages, latency, and cost per server
-- **Visualization**: Interactive bar chart of server utilization
-
-### 3. Analytics Dashboard Module
-
-**Performance Monitoring**
-- Historical model performance comparisons
-- Side-by-side analysis of latency vs cost models
-- Interactive charts with configurable parameters
-- Export functionality for further analysis
-
-**Real-time Insights**
-- System status indicators (model health, last update time)
-- Resource utilization trends
-- Optimization history tracking
-
-## Data Format
-
-Your CSV dataset should include the following columns:
-
-### Required Target Columns
-- `latency_ms` - Network latency in milliseconds
-- `egress_cost_per_gb` - Data egress cost per GB in dollars
-
-### Required Feature Columns
-- `bandwidth_MBps` - Available bandwidth in MB/s
-- `cpu_utilization_%` - CPU utilization percentage
-- `ram_utilization_%` - RAM utilization percentage
-- `request_size_MB` - Request size in megabytes
-- `distance_km` - Geographic distance in kilometers
-- `server_load` - Server load ratio (0.0 to 1.0)
-- `cache_hit_ratio` - Cache hit ratio (0.0 to 1.0)
-- `storage_tier` - Storage type (HDD, SSD, NVMe)
-
-### Example Dataset Row
-```csv
-bandwidth_MBps,cpu_utilization_%,ram_utilization_%,request_size_MB,distance_km,server_load,cache_hit_ratio,storage_tier,latency_ms,egress_cost_per_gb
-100,45,60,500,150,0.3,0.7,SSD,25.4,0.025
+```python
+# Performance Parameters
+distance_km = 100           # Geographic distance
+bandwidth_MBps = 500        # Network bandwidth
+server_load = 0.5           # Current server load (0-1)
+cache_hit_ratio = 0.7       # Cache efficiency (0-1)
+cpu_utilization = 0.5       # CPU usage (0-1)
+ram_utilization = 0.6       # RAM usage (0-1)
+request_size_MB = 500       # Average request size
+storage_tier = 'SSD'        # HDD/SSD/NVMe
 ```
 
-## Model Performance
+### VM and Server Configuration
 
-### Current Best Models (Pre-trained)
+```python
+# VM Configuration
+num_vms = 4
+vm_demands = [4, 6, 8, 4]   # CPU requirements per VM
 
-**Latency Prediction Models:**
-| Model | MAE (ms) | Performance |
-|-------|----------|-------------|
-| LightGBM | 5.37 | Best |
-| XGBoost | 5.09 | Excellent |
-| Random Forest | 6.78 | Very Good |
-| Polynomial Regression | 57.47 | Baseline |
+# Server Configuration
+num_servers = 2
+server_capacities = [16, 20] # CPU capacity per server
+server_costs = [1.0, 1.2]    # $/hour per server
+```
 
-**Cost Prediction Models:**
-| Model | MAE ($/GB) | Performance |
-|-------|------------|-------------|
-| Linear Regression | 0.001012 | Best |
-| Ridge | 0.001012 | Best |
-| Polynomial Regression | 0.001013 | Excellent |
-| LightGBM | 0.001017 | Excellent |
+### Model Training Configuration
 
-## Architecture
+Edit `train_model.py` for custom settings:
 
-### Core Components
+```python
+# Train-test split
+TEST_SIZE = 0.2
+RANDOM_STATE = 42
 
-1. **streamlit_app.py** - Main web application interface
-2. **cdn_optimizer.py** - Optimization algorithms and ML model integration
-3. **train_model.py** - Model training pipeline and evaluation
-4. **utils.py** - Utility functions for data preprocessing
-5. **models/** - Directory containing pre-trained ML models
+# Model parameters (example for XGBoost)
+xgb_params = {
+    'n_estimators': 100,
+    'learning_rate': 0.1,
+    'max_depth': 6,
+    'random_state': 42
+}
+```
 
-### Optimization Algorithms
+---
 
-**Integer Linear Programming (ILP)**
-- Primary optimization method using PuLP solver
-- Guarantees optimal solutions for placement problems
-- Handles complex constraints and multiple objectives
+## 🌐 Deployment
 
-**Greedy Fallback Algorithm**
-- Backup optimization when ILP fails or times out
-- Fast approximate solutions for large-scale problems
-- Sorts VMs by demand and places on cheapest feasible servers
+### Option 1: Streamlit Cloud (Recommended)
 
-### Machine Learning Pipeline
+**Steps**:
+1. Fork this repository to your GitHub
+2. Visit [share.streamlit.io](https://share.streamlit.io)
+3. Connect your GitHub account
+4. Select repository and branch
+5. Click "Deploy"
 
-**Data Preprocessing**
-- Automatic feature scaling using StandardScaler
-- One-hot encoding for categorical variables
-- Polynomial feature generation for complex relationships
+**Benefits**: Free hosting, auto-deployment on push, HTTPS included
 
-**Model Training**
-- Cross-validation with 80/20 train-test split
-- Automated hyperparameter tuning
-- Performance evaluation using Mean Absolute Error
+### Option 2: Docker Deployment
 
-**Model Selection**
-- Automatic selection of best-performing models
-- Support for multiple ML frameworks (scikit-learn, XGBoost, LightGBM)
-- Fallback handling for missing dependencies
-
-## Configuration
-
-### Environment Variables
-- `MODEL_DIR` - Directory for storing trained models (default: "models/")
-- `DATA_PATH` - Path to training dataset (for standalone training)
-
-### Model Parameters
-Models can be fine-tuned by modifying parameters in `train_model.py`:
-- Random Forest: `n_estimators`, `max_depth`
-- XGBoost: `learning_rate`, `n_estimators`, `max_depth`
-- LightGBM: `learning_rate`, `n_estimators`, `max_depth`
-
-## Deployment
-
-### Local Development
 ```bash
-# Standard development mode
-streamlit run streamlit_app.py
+# Build Docker image
+docker build -t vm-optimizer:latest .
 
-# Development with auto-reload
-streamlit run streamlit_app.py --server.runOnSave true
+# Run container
+docker run -d \
+  -p 8501:8501 \
+  --name vm-optimizer \
+  -v $(pwd)/models:/app/models \
+  -v $(pwd)/data:/app/data \
+  vm-optimizer:latest
 
-# Custom port
-streamlit run streamlit_app.py --server.port 8502
+# Check logs
+docker logs -f vm-optimizer
 ```
 
-### Production Deployment Options
+### Option 3: Cloud Platforms
 
-#### Option 1: Streamlit Cloud (Recommended for Demo)
-1. Fork the repository to your GitHub account
-2. Go to [share.streamlit.io](https://share.streamlit.io)
-3. Connect your GitHub repository
-4. Deploy with one click
+<details>
+<summary><b>AWS EC2</b></summary>
 
-#### Option 2: Docker Deployment
-```dockerfile
-# Dockerfile
-FROM python:3.9-slim
-
-WORKDIR /app
-
-# Copy requirements and install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application code
-COPY . .
-
-# Create models directory
-RUN mkdir -p models
-
-# Expose port
-EXPOSE 8501
-
-# Health check
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
-
-# Run the application
-CMD ["streamlit", "run", "streamlit_app.py", "--server.address", "0.0.0.0"]
-```
-
-**Build and run Docker container:**
 ```bash
-# Build the image
-docker build -t vm-optimizer .
-
-# Run the container
-docker run -p 8501:8501 vm-optimizer
-```
-
-#### Option 3: AWS EC2 Deployment
-```bash
-# On your EC2 instance
+# On EC2 instance
 sudo yum update -y
 sudo yum install python3 python3-pip git -y
 
-# Clone and setup
-git clone https://github.com/yourusername/vm-placement-cdn-optimizer.git
-cd vm-placement-cdn-optimizer
+git clone https://github.com/vinayakjoshi04/VM_Placement_and_CDN_Optimization.git
+cd VM_Placement_and_CDN_Optimization
+
 pip3 install -r requirements.txt
 
-# Run with nohup for background execution
+# Run with nohup
 nohup streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0 &
 ```
+</details>
 
-#### Option 4: Heroku Deployment
-1. **Create Heroku-specific files:**
+<details>
+<summary><b>Google Cloud Run</b></summary>
 
-`Procfile`:
+```bash
+# Build and deploy
+gcloud builds submit --tag gcr.io/PROJECT_ID/vm-optimizer
+gcloud run deploy vm-optimizer \
+  --image gcr.io/PROJECT_ID/vm-optimizer \
+  --platform managed \
+  --port 8501
+```
+</details>
+
+<details>
+<summary><b>Heroku</b></summary>
+
+Create `setup.sh`:
+```bash
+mkdir -p ~/.streamlit/
+echo "[server]
+headless = true
+port = $PORT
+enableCORS = false
+" > ~/.streamlit/config.toml
+```
+
+Create `Procfile`:
 ```
 web: sh setup.sh && streamlit run streamlit_app.py
 ```
 
-`setup.sh`:
+Deploy:
 ```bash
-mkdir -p ~/.streamlit/
-echo "\
-[server]\n\
-headless = true\n\
-port = $PORT\n\
-enableCORS = false\n\
-\n\
-" > ~/.streamlit/config.toml
-```
-
-2. **Deploy:**
-```bash
-# Initialize git (if not already done)
-git init
-git add .
-git commit -m "Initial commit"
-
-# Create Heroku app
-heroku create your-vm-optimizer-app
-
-# Deploy
+heroku create your-app-name
 git push heroku main
 ```
+</details>
 
-### Environment Configuration
+---
 
-**Development Environment Variables:**
-```bash
-# .env file
-DEBUG=True
-MODEL_DIR=models
-DATA_PATH=data/vm_placement_cdn_dataset.csv
-```
-
-**Production Environment Variables:**
-```bash
-DEBUG=False
-MODEL_DIR=/app/models
-STREAMLIT_SERVER_HEADLESS=true
-STREAMLIT_SERVER_PORT=8501
-```
-
-## Troubleshooting
+## 🐛 Troubleshooting
 
 ### Installation Issues
 
-**Problem: Package installation fails**
+<details>
+<summary><b>Package installation fails</b></summary>
+
 ```bash
 # Solution 1: Upgrade pip
 python -m pip install --upgrade pip
@@ -623,178 +478,243 @@ python -m pip install --upgrade pip
 # Solution 2: Install with no cache
 pip install -r requirements.txt --no-cache-dir
 
-# Solution 3: Install packages individually
-pip install streamlit scikit-learn pandas numpy plotly joblib pulp
-pip install xgboost lightgbm  # These might need special handling
+# Solution 3: Install individually
+pip install streamlit scikit-learn pandas numpy plotly
+pip install xgboost lightgbm joblib pulp
 ```
+</details>
 
-**Problem: LightGBM installation fails on macOS**
+<details>
+<summary><b>LightGBM fails on macOS</b></summary>
+
 ```bash
 # For Intel Macs
 brew install cmake
 pip install lightgbm
 
-# For Apple Silicon (M1/M2)
+# For Apple Silicon (M1/M2/M3)
 brew install cmake libomp
 pip install --no-use-pep517 lightgbm
 ```
+</details>
 
-**Problem: XGBoost installation fails**
+<details>
+<summary><b>XGBoost installation error</b></summary>
+
 ```bash
-# Alternative installation
+# Try conda installation
 conda install -c conda-forge xgboost
-# OR
+
+# Or build from source
 pip install xgboost --no-binary xgboost
 ```
+</details>
 
 ### Runtime Issues
 
-**Problem: "Models not found" error**
+<details>
+<summary><b>"Models not found" error</b></summary>
+
 ```bash
-# Check if models directory exists
+# Check models directory
 ls -la models/
 
-# If missing, create directory
+# Create if missing
 mkdir models
 
-# Download pre-trained models or retrain
+# Train models
 python train_model.py
 ```
+</details>
 
-**Problem: Port already in use**
+<details>
+<summary><b>Port already in use</b></summary>
+
 ```bash
 # Find process using port 8501
 lsof -i :8501
 
-# Kill the process (replace PID)
+# Kill process (replace PID)
 kill -9 <PID>
 
 # Or use different port
 streamlit run streamlit_app.py --server.port 8502
 ```
+</details>
 
-**Problem: Dataset upload fails**
-- Check CSV format matches required schema
-- Ensure file size is under Streamlit's 200MB limit
-- Verify all required columns are present
-- Check for special characters in column names
+<details>
+<summary><b>Optimization fails</b></summary>
 
-**Problem: Optimization fails**
-- Verify server capacities exceed total VM demands
-- Check that all VMs have positive resource requirements
-- Ensure at least one feasible placement exists
-- Try reducing the number of VMs/servers for testing
+**Common causes**:
+- ❌ Total VM demands exceed total server capacity
+- ❌ Negative or zero VM demands
+- ❌ Invalid server capacities
 
-**Problem: Memory issues with large datasets**
+**Solutions**:
 ```python
-# Reduce model complexity in train_model.py
-# For Random Forest:
-RandomForestRegressor(n_estimators=50, max_depth=10)
+# Ensure capacity > demand
+total_demand = sum(vm_demands)      # e.g., 18 CPU
+total_capacity = sum(capacities)    # e.g., 36 CPU
 
-# For XGBoost:
-XGBRegressor(n_estimators=50, max_depth=4)
+# Add buffer
+assert total_capacity >= total_demand * 1.2
 ```
+</details>
 
-### Performance Optimization
+<details>
+<summary><b>Dataset upload fails</b></summary>
 
-**For Better Model Training Speed:**
+**Checklist**:
+- ✅ File format is CSV
+- ✅ File size < 200MB
+- ✅ All required columns present
+- ✅ No special characters in headers
+- ✅ No empty rows at start
+
+**Validate**:
 ```python
-# In train_model.py, modify these parameters:
-models = {
-    "RandomForest": RandomForestRegressor(n_estimators=50, n_jobs=-1),
-    "XGBoost": XGBRegressor(n_estimators=50, n_jobs=-1),
-    "LightGBM": lgb.LGBMRegressor(n_estimators=50, n_jobs=-1)
-}
+import pandas as pd
+df = pd.read_csv('your_file.csv')
+print(df.head())
+print(df.columns.tolist())
 ```
+</details>
 
-**For Faster Optimization:**
-- Reduce number of VMs to under 10 for initial testing
-- Use fewer servers (2-5) for quick results
-- Ensure server capacities have some buffer above total demands
+### Performance Issues
 
-### Common Error Messages and Solutions
+<details>
+<summary><b>Slow model training</b></summary>
 
-**Error: "ModuleNotFoundError: No module named 'lightgbm'"**
-```bash
-# Solution: Install missing package
-pip install lightgbm
-```
-
-**Error: "Solver PuLP_CBC_CMD unavailable"**
-```bash
-# Solution: Install CBC solver
-# Windows: Download from https://github.com/coin-or/Cbc
-# macOS: brew install cbc
-# Linux: sudo apt-get install coinor-cbc
-```
-
-**Error: "DataFrame constructor not properly called!"**
-- Check that your CSV has proper headers
-- Ensure no empty rows at the beginning
-- Verify column names match exactly (case-sensitive)
-
-## Advanced Configuration
-
-### Custom Model Parameters
-
-Edit `train_model.py` to customize model hyperparameters:
-
+Edit `train_model.py`:
 ```python
-# Example: Tuning XGBoost
+# Reduce estimators
+"RandomForest": RandomForestRegressor(
+    n_estimators=50,  # Instead of 100
+    n_jobs=-1
+),
 "XGBoost": XGBRegressor(
-    n_estimators=200,      # More trees
-    learning_rate=0.05,    # Slower learning
-    max_depth=8,           # Deeper trees
-    subsample=0.8,         # Feature sampling
-    random_state=42
+    n_estimators=50,
+    n_jobs=-1
 )
 ```
+</details>
 
-### Adding New Models
-
-Add custom models to the training pipeline:
-
-```python
-# In get_models() function in train_model.py
-from sklearn.neural_network import MLPRegressor
-
-models["NeuralNetwork"] = MLPRegressor(
-    hidden_layer_sizes=(100, 50),
-    max_iter=1000,
-    random_state=42
-)
-```
-
-### Custom Optimization Constraints
-
-Modify `cdn_optimizer.py` to add new constraints:
+<details>
+<summary><b>Memory issues with large datasets</b></summary>
 
 ```python
-# Example: Add maximum VMs per server constraint
-max_vms_per_server = 3
-for srv in server_names:
-    prob += pulp.lpSum(x[vm][srv] for vm in vm_names) <= max_vms_per_server
+# Reduce data size
+df_sample = df.sample(frac=0.5, random_state=42)
+
+# Or use chunking
+for chunk in pd.read_csv('file.csv', chunksize=1000):
+    process_chunk(chunk)
+```
+</details>
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how to get started:
+
+1. **Fork** the repository
+2. **Create** a feature branch
+   ```bash
+   git checkout -b feature/AmazingFeature
+   ```
+3. **Commit** your changes
+   ```bash
+   git commit -m 'Add some AmazingFeature'
+   ```
+4. **Push** to the branch
+   ```bash
+   git push origin feature/AmazingFeature
+   ```
+5. **Open** a Pull Request
+
+### Development Setup
+
+```bash
+# Clone your fork
+git clone https://github.com/YOUR_USERNAME/VM_Placement_and_CDN_Optimization.git
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Make changes and test
+streamlit run streamlit_app.py
 ```
 
-## Contributing
+### Guidelines
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/new-feature`)
-5. Create a Pull Request
+- Follow PEP 8 style guidelines
+- Add docstrings to functions
+- Update README for new features
+- Test thoroughly before submitting
 
-## License
+---
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 📄 License
 
-## Support
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-For questions, bug reports, or feature requests, please open an issue in the GitHub repository.
+**Summary**: You can use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, provided you include the copyright notice and license.
 
-## Acknowledgments
+---
 
-- Built with Streamlit for the web interface
-- Optimization powered by PuLP and CBC solver
-- Machine learning capabilities provided by scikit-learn, XGBoost, and LightGBM
-- Interactive visualizations created with Plotly
+## 🙏 Acknowledgments
+
+- **Streamlit** - Web application framework
+- **PuLP** - Linear programming optimization
+- **scikit-learn, XGBoost, LightGBM** - Machine learning frameworks
+- **Plotly** - Interactive visualizations
+- **Open Source Community** - For inspiration and support
+
+---
+
+## 📞 Contact & Support
+
+**Developer**: Vinayak Joshi  
+**GitHub**: [@vinayakjoshi04](https://github.com/vinayakjoshi04)  
+**Project**: [VM Placement & CDN Optimizer](https://github.com/vinayakjoshi04/VM_Placement_and_CDN_Optimization)
+
+### Get Help
+
+- 🐛 **Bug Reports**: [Open an issue](https://github.com/vinayakjoshi04/VM_Placement_and_CDN_Optimization/issues)
+- 💡 **Feature Requests**: [Submit a request](https://github.com/vinayakjoshi04/VM_Placement_and_CDN_Optimization/issues)
+- 📖 **Documentation**: Check this README and code comments
+- 💬 **Discussions**: Use GitHub Discussions for questions
+
+---
+
+## ⭐ Show Your Support
+
+If this project helped you, please give it a ⭐️!
+
+**Star** the repository to help others discover it.
+
+---
+
+## 📈 Project Stats
+
+![GitHub stars](https://img.shields.io/github/stars/vinayakjoshi04/VM_Placement_and_CDN_Optimization?style=social)
+![GitHub forks](https://img.shields.io/github/forks/vinayakjoshi04/VM_Placement_and_CDN_Optimization?style=social)
+![GitHub issues](https://img.shields.io/github/issues/vinayakjoshi04/VM_Placement_and_CDN_Optimization)
+![GitHub license](https://img.shields.io/github/license/vinayakjoshi04/VM_Placement_and_CDN_Optimization)
+
+---
+
+<div align="center">
+
+**[🔝 Back to Top](#-vm-placement--cdn-optimizer)**
+
+Made with ❤️ by [Vinayak Joshi](https://github.com/vinayakjoshi04)
+
+*Optimizing infrastructure, one VM at a time* 🚀
+
+</div>
